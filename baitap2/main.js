@@ -16,7 +16,7 @@ function layThongTinSV() {
     var _diemLy = getEle("txtDiemLy").value;
     var _diemHoa = getEle("txtDiemHoa").value;
 
-    //lag isValid = true => form hop le
+    //flag isValid = true => form hop le
     //                      else khong hop le
 
     var isValid = true;
