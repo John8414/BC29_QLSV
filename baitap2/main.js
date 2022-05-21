@@ -4,8 +4,9 @@ function getEle(id) {
 //phai mang ra global do neu de trong local se bi push va mang rong
 var dssv = new DanhSachSinhVien();
 var validation = new Validation();
+// var validationKhoaHoc = new kiemTraKhoaHoc;
 
-function layThongTinSV() {
+function layThongTinSV(doesAdd) {
     var _maSV = getEle("txtMaSV").value;
     var _tenSV = getEle("txtTenSV").value;
     var _email = getEle("txtEmail").value;
@@ -21,8 +22,36 @@ function layThongTinSV() {
 
     var isValid = true;
 
-    // Check validation
-    isValid = validation.kiemTraRong(_maSV, "errorMaSV", "(*)Vui lòng nhập mã sinh viên");
+    // *** Check validation ***
+
+    if (doesAdd) {
+        //mã SV
+        isValid &= validation.kiemTraRong(_maSV, "errorMaSV", "(*)Vui lòng nhập mã sinh viên")
+            && validation.kiemTraDoDaiKiTu(_maSV, "errorMaSV", 4, 8, "(*)Vui lòng nhập từ 4-8 ký tự")
+            && validation.kiemTraTrung(_maSV, "errorMaSV", "(*)Mã sinh viên đã tồn tại", dssv.arr);
+    }
+    // ten SV
+    isValid &= validation.kiemTraRong(_tenSV, "errorTenSV", "(*) Vui long nhap Tên sinh viên")
+        && validation.kiemTraDoDaiKiTu(_tenSV, "errorTenSV", 10, 20, "(*)Vui lòng nhập từ 10-20 ký tự")
+        && validation.kiemChuoiKiTu(_tenSV, "errorTenSV", "(*) Vui lòng nhập chữ ạ!");
+
+    // Email
+    isValid &= validation.kiemTraRong(_email, "errorEmail", "(*) Vui long nhap Email");
+
+    // Mat khau
+    isValid &= validation.kiemTraRong(_pass, "errorMatKhau", "(*) Vui long nhap matKhau");
+
+    //Khoa Hoc
+    isValid &= validation.kiemTraKhoaHoc("khSV", "errorKhoaHoc", "(*) Vui long chon khoa hoc");
+
+    // Diem toan
+    isValid &= validation.kiemTraRong(_diemToan, "errorDiemToan", "(*) Vui long nhap diemToan");
+
+    // Diem ly
+    isValid &= validation.kiemTraRong(_diemLy, "errorDiemLy", "(*) Vui long nhap diemLy");
+
+    // Diem hoa
+    isValid &= validation.kiemTraRong(_diemHoa, "errorDiemHoa", "(*) Vui long nhap diemHoa");
 
     //check isValid
     if (!isValid) return;
@@ -48,7 +77,7 @@ getLocalStorage();
 
 getEle("btnThemSV").onclick = function () {
 
-    var sinhVien = layThongTinSV();
+    var sinhVien = layThongTinSV(true);
 
 
     if (sinhVien) {
@@ -101,7 +130,7 @@ function taoBang(data) {
  * Cap nhat SV
  */
 getEle('btnCapNhat').onclick = function () {
-    var sinhVien = layThongTinSV();
+    var sinhVien = layThongTinSV(false);
 
     dssv.capNhat(sinhVien);
     taoBang(dssv.arr);
